@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taş Kağıt Makas Oyunu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #game-container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+        .button {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+        .button:hover {
+            transform: scale(1.1);
+        }
+        #start-screen {
+            display: block;
+        }
+        #game-screen {
+            display: none;
+        }
+        .choices {
+            margin: 20px;
+        }
+        .choices button {
+            font-size: 2em;
+            padding: 15px 30px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .score {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="start-screen">
+            <button class="button" id="play-button">Oyna</button>
+        </div>
+
+        <div id="game-screen">
+            <h1>Taş Kağıt Makas</h1>
+            <p id="round-info">Kaç tur oynansın?</p>
+            <button class="button" id="play-again">Tekrar Oyna</button>
+            <div id="choices" class="choices">
+                <button class="button" id="rock">Taş</button>
+                <button class="button" id="paper">Kağıt</button>
+                <button class="button" id="scissors">Makas</button>
+            </div>
+            <div class="score" id="score">
+                <p>Skorlar: <span id="player-score">0</span> - <span id="computer-score">0</span></p>
+                <p id="turns">Tur: 0</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const playButton = document.getElementById("play-button");
+        const startScreen = document.getElementById("start-screen");
+        const gameScreen = document.getElementById("game-screen");
+        const rockButton = document.getElementById("rock");
+        const paperButton = document.getElementById("paper");
+        const scissorsButton = document.getElementById("scissors");
+        const playerScoreElement = document.getElementById("player-score");
+        const computerScoreElement = document.getElementById("computer-score");
+        const turnsElement = document.getElementById("turns");
+        const scoreElement = document.getElementById("score");
+        const playAgainButton = document.getElementById("play-again");
+
+        let playerScore = 0;
+        let computerScore = 0;
+        let turns = 0;
+        let maxTurns = 5;
+
+        const choices = ["rock", "paper", "scissors"];
+
+        playButton.addEventListener("click", () => {
+            startScreen.style.display = "none";
+            gameScreen.style.display = "block";
+            scoreElement.style.display = "block";
+        });
+
+        function getComputerChoice() {
+            const randomIndex = Math.floor(Math.random() * 3);
+            return choices[randomIndex];
+        }
+
+        function playRound(playerChoice) {
+            const computerChoice = getComputerChoice();
+            let result = "";
+            
+            if (playerChoice === computerChoice) {
+                result = "Beraberlik!";
+            } else if (
+                (playerChoice === "rock" && computerChoice === "scissors") ||
+                (playerChoice === "paper" && computerChoice === "rock") ||
+                (playerChoice === "scissors" && computerChoice === "paper")
+            ) {
+                result = "Kazandınız!";
+                playerScore++;
+            } else {
+                result = "Kaybettiniz!";
+                computerScore++;
+            }
+
+            turns++;
+            turnsElement.textContent = `Tur: ${turns}`;
+            playerScoreElement.textContent = playerScore;
+            computerScoreElement.textContent = computerScore;
+
+            if (turns >= maxTurns) {
+                alert(`Oyun Bitti! Skor: ${playerScore} - ${computerScore}`);
+                playAgainButton.style.display = "block";
+            }
+        }
+
+        rockButton.addEventListener("click", () => playRound("rock"));
+        paperButton.addEventListener("click", () => playRound("paper"));
+        scissorsButton.addEventListener("click", () => playRound("scissors"));
+
+        playAgainButton.addEventListener("click", () => {
+            playerScore = 0;
+            computerScore = 0;
+            turns = 0;
+            playerScoreElement.textContent = playerScore;
+            computerScoreElement.textContent = computerScore;
+            turnsElement.textContent = `Tur: ${turns}`;
+            playAgainButton.style.display = "none";
+        });
+    </script>
+</body>
+</html>
